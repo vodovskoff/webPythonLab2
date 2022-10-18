@@ -1,12 +1,9 @@
 import pandas as pd;
+import sqlite3
+con = sqlite3.connect("library.sqlite")
+f_damp = open('BD/db_creation.sql','r', encoding ='utf-8-sig')
+damp = f_damp.read()
+f_damp.close()
+con.executescript(damp)
+con.commit()
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
