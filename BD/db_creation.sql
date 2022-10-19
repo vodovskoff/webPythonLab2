@@ -27,7 +27,7 @@ CREATE TABLE manager (
 	manager_passport_series INTEGER,
 	manager_passport_number INTEGER,
 	manager_name         VARCHAR(100),
-	hourly_cost          INTEGER  DEFAULT 0,
+	hourly_cost          double  DEFAULT 0,
 	percentage_comission INTEGER  DEFAULT 1.5
  );
 
