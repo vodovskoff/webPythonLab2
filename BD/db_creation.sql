@@ -35,7 +35,7 @@ DROP TABLE IF EXISTS manager_timesheet;
 CREATE TABLE manager_timesheet (
 	manager_timesheet_id INTEGER PRIMARY KEY AUTOINCREMENT,
 	manager_id           INTEGER,
-	coming_to_wotk       DATETIME  DEFAULT CURRENT_TIMESTAMP,
+	coming_to_work       DATETIME  DEFAULT CURRENT_TIMESTAMP,
 	leaving_from_work    DATETIME  DEFAULT CURRENT_TIMESTAMP,
 	sheduled_date        DATE  DEFAULT CURRENT_DATE,
 	FOREIGN KEY ( manager_id ) REFERENCES manager( manager_id ) ON DELETE CASCADE ON UPDATE CASCADE
