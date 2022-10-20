@@ -28,22 +28,41 @@ cursor = con.cursor()
 # print(cursor.fetchall())
 
 #1. Вывести количество прогуленных дней каждого продавца
-ds=pd.read_sql(
-    '''SELECT manager_name,
-    case when count(*)==0 or not exists(select * from manager_timesheet where manager_timesheet.manager_id=manager.manager_id and manager_timesheet.coming_to_work is not null) then 0
-    else count(*) end as Прогулы
-    FROM manager
-    left JOIN manager_timesheet ON manager_timesheet.manager_id=manager.manager_id
-    where coming_to_work is null
-    group by manager_name
-    order by Прогулы desc ''', con)
-print(ds)
+# ds=pd.read_sql(
+#     '''SELECT manager_name,
+#     case when count(*)==0 or not exists(select * from manager_timesheet where manager_timesheet.manager_id=manager.manager_id and manager_timesheet.coming_to_work is not null) then 0
+#     else count(*) end as Прогулы
+#     FROM manager
+#     left JOIN manager_timesheet ON manager_timesheet.manager_id=manager.manager_id
+#     where coming_to_work is null
+#     group by manager_name
+#     order by Прогулы desc ''', con)
+# print(ds)
 
 # Поднять стоимость продуктов данной марки
 # cursor.execute(
 #     '''UPDATE product
 #     set product_price = product_price * cast(1.5 as real)
 #     where exists(SELECT * FROM car WHERE car.car_id=product.car_id)''')
-print(cursor.fetchall())
+
+#	1. Вывести сотрудников, которые в этом месяце выполняли тест-драйв и отсортировать по его имени.
+# ds = pd.read_sql('''
+#     SELECT manager_name FROM manager
+#     JOIN actions USING  (manager_id)
+#     JOIN action_type USING (action_type_id)
+#     WHERE action_type_name="Тест-драйв"
+#     ORDER BY manager_name
+# ''', con)
+# print(ds)
+
+#	2. Вывести продавцов, которые выходили на работу менее N раз в заданном месяце и отсортировать по количеству рабочих дней
+ds = pd.read_sql('''
+SELECT manager_name, count(manager_name), manager_id FROM manager
+JOIN manager_timesheet USING (manager_id)
+GROUP BY manager_name
+HAVING coming_to_work BETWEEN "2021-10-01" AND "2022-10-31"
+and count(manager_name)<5
+''', con)
+print(ds)
 con.commit()
 
