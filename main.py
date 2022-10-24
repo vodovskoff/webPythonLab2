@@ -55,14 +55,28 @@ cursor = con.cursor()
 # ''', con)
 # print(ds)
 
-#	2. Вывести продавцов, которые выходили на работу менее N раз в заданном месяце и отсортировать по количеству рабочих дней
+#	2. Вывести продавца(продавцов), которые выходили на работу больше всех раз
+# ds = pd.read_sql('''
+# SELECT manager_name, count(manager_name), manager_id FROM manager
+# JOIN manager_timesheet USING (manager_id)
+# GROUP BY manager_name
+# HAVING coming_to_work BETWEEN "2021-10-01" AND "2022-10-31"
+# and count(manager_name)<5
+# ''', con)
+
+#	2. Вывести покупателя(покупателей), которые купили больше всех авто
 ds = pd.read_sql('''
-SELECT manager_name, count(manager_name), manager_id FROM manager
-JOIN manager_timesheet USING (manager_id)
-GROUP BY manager_name
-HAVING coming_to_work BETWEEN "2021-10-01" AND "2022-10-31"
-and count(manager_name)<5
+SELECT buyer_name FROM buyer
+JOIN actions USING (buyer_id)
+JOIN action_type ON action_type_name="Продажа" AND action_type.action_type_id=actions.action_type_id
+GROUP BY buyer_id
+having count(buyer_id)=
+(SELECT count(buyer_id) from actions
+JOIN action_type ON action_type_name="Продажа" AND action_type.action_type_id=actions.action_type_id
+GROUP BY buyer_id
+ORDER BY count(buyer_id) desc limit 1)
 ''', con)
+
 print(ds)
 con.commit()
 
