@@ -49,7 +49,7 @@ def show_count_of_missed_days_of_manager():
         group by manager_name
         order by Прогулы desc ''', con)
     print(ds)
-
+#show_count_of_missed_days_of_manager()
 #Вывести сотрудников, которые в данном месяце выполняли тест-драйв и отсортировать по его имени.
 def show_test_drivers(var_month):
     ds = pd.read_sql(f'''
@@ -61,7 +61,7 @@ def show_test_drivers(var_month):
         ORDER BY manager_name
     ''', con)
     print(ds)
-
+#show_test_drivers(10)
 #Вывести продавца(продавцов), которые выходили на работу меньше N раз в данном месяце
 def show_managers_working_less_times_in_month(var_month, var_count):
     ds = pd.read_sql(f'''
@@ -72,7 +72,7 @@ def show_managers_working_less_times_in_month(var_month, var_count):
     and count(manager_name)<{var_count}
     ''', con)
     print(ds)
-
+#show_managers_working_less_times_in_month(10, 10)
 #Вывести покупателя(покупателей), которые купили больше всех авто
 def show_best_buyers():
     ds = pd.read_sql('''
@@ -87,19 +87,21 @@ def show_best_buyers():
     ORDER BY count(buyer_id) desc limit 1)
     ''', con)
     print(ds)
-
+#show_best_buyers()
 #Вывести продавца, который отработал больше всех дней.
 def show_best_workers():
     ds = pd.read_sql('''
-    SELECT manager_name FROM manager
-    JOIN manager_timesheet USING (manager_id)
+    SELECT manager_name, count(*) AS Отработанных_дней FROM manager
+    JOIN manager_timesheet ON (manager_timesheet.manager_id=manager.manager_id)
+    WHERE coming_to_work is not NULL
     GROUP BY manager_name
     having count(manager_name) =
     (SELECT count(manager_id) from manager_timesheet
+    WHERE coming_to_work is not NULL
     GROUP BY manager_id
     ORDER BY count(manager_id) desc limit 1)
     ''', con)
     print(ds)
-show_best_workers()
+#show_best_workers()
 con.commit()
 
